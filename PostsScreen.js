@@ -4,7 +4,7 @@ import {
   View,
   Text,
   ScrollView,
-  Platform,
+  Platform, Dimensions,
   TouchableOpacity,
 } from "react-native";
 import { ISNRVContext } from "./Provider";
@@ -12,6 +12,7 @@ import { ISNRVContext } from "./Provider";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import Autolink from "react-native-autolink";
 import Accordion from "react-native-collapsible/Accordion";
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 export default function Posts({ navigation }) {
@@ -20,10 +21,15 @@ export default function Posts({ navigation }) {
 
   const _renderHeader = (section) => {
     return (
+
       <View style={styles.TitleRect}>
-        <Text style={styles.date}>{section.Date}</Text>
-        <Text style={styles.Title}>{section.Title}</Text>
-      </View>
+        <LinearGradient colors={['#32AB9F', '#009688', '#32AB9F']} //#009688 #99D5CF --- Beautiful Blue ['#56CCF2', '#2F80ED'
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }} style={styles.TitleRect}>
+          <Text style={styles.date}>{section.Date}</Text>
+          <Text style={styles.Title}>{section.Title}</Text>
+        </LinearGradient></View>
+
     );
   };
   const _renderContent = (section) => {
@@ -107,30 +113,35 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 4,
     flex: 1,
+    lineHeight:30
   },
 
   oneRect: {
     backgroundColor: "rgba(255,255,255,1)",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
     marginBottom: 15,
-    marginLeft: 3,
-    marginRight: 3,
+    // marginLeft: 3,
+    // marginRight: 3,
     elevation: 2,
-    borderRadius: 15,
-    borderWidth: 0.5,
+    borderRadius: 10,
     borderColor: "rgba(0,150,136,1)",
   },
 
   TitleRect: {
-    backgroundColor: "rgba(0,150,136,1)",
-    flexDirection: "column",
-    alignItems: "center",
-    marginBottom: 17,
+    backgroundColor: "#56CCF2", //['#56CCF2', '#2F80ED'
     elevation: 6,
-    shadowOpacity: 10,
     shadowColor: "grey",
+    marginBottom: 17,
+    alignItems: "center",
+    alignSelf: "center",
+    width: Dimensions.get("window").width * 0.9,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    borderRadius: 10,
   },
   Title: {
     paddingVertical: 5,

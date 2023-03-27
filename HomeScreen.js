@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback} from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -9,12 +9,13 @@ import {
   FlatList,
   Image,
   Dimensions,
+  ImageBackground
 } from "react-native";
 import Autolink from "react-native-autolink";
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, MaterialIcons, SimpleLineIcons } from "@expo/vector-icons";
 import {
   AzanTimes365,
   getIqamaWeek,
@@ -24,8 +25,9 @@ import {
 } from "./Database/AzanTimes";
 import notifyApp from "./notifiyApp";
 import moment from "moment";
-const green = "rgb(230,145,56)"   // "rgba(0,150,136,1)";
+const green = "rgba(0,150,136,1)"   // "rgba(0,150,136,1)";
 import { ISNRVContext } from "./Provider";
+import { LinearGradient } from 'expo-linear-gradient';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -49,12 +51,12 @@ export default function Home({ navigation }) {
     async function prepare() {
       try {
         setNextPrayerTime(getNextPrayer());
-        setAzanTimes(AzanTimes365); 
+        setAzanTimes(AzanTimes365);
         setMaxDate(moment().add(364, "days").toDate());
         await Font.loadAsync({
           'recursive': require('./assets/fonts/recursive.ttf'),
         });
-        
+
         // Artificially delay for two seconds to simulate a slow loading
         // experience. Please remove this if you copy and paste the code!
         // await new Promise(resolve => setTimeout(resolve, 2000));
@@ -106,10 +108,11 @@ export default function Home({ navigation }) {
     setDatePickerVisibility(false);
   };
   /********************************************************************************/
- 
+
   function OneRect(props) {
     return (
       <View style={styles.OnePrayerRect}>
+
         <Text style={styles.fajr}>{props.title}</Text>
         <Text style={props.boldd ? styles.timePrayerBold : styles.timePrayer}>
           {props.azan}
@@ -178,7 +181,7 @@ export default function Home({ navigation }) {
           <OneRect
             title="Maghrib"
             azan={item[4]}
-            iqama={IqamaTimesOneDay[2]}
+            iqama={IqamaTimesOneDay[3]}
             boldd={NextPrayerTime == 5 && index == 0 ? true : false}
           />
           <OneRect
@@ -197,25 +200,22 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
+
       {/* The Top Bar*/}
-      <View style={styles.TopRect}>
-        {/* <Image
-          source={require("./assets/ramadan-2.png")}
-          style={{
-            width: 66,
-            height: 50,
-            marginTop: 45,
-            left: 5,
-            bottom: 3,
-          }}
-        ></Image> */}
+      <LinearGradient colors={['#009688', '#47C9BC']} //#009688 #99D5CF --- Beautiful Blue ['#56CCF2', '#2F80ED'
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }} style={styles.TopRect}>
         <Text style={styles.PrayerTimes}>Prayer Times</Text>
         <TouchableOpacity
           onPress={() => setDatePickerVisibility(true)}
           activeOpacity={0.1}
           pressDuration={0}
         >
-          <FontAwesome name="calendar-o" style={styles.icon} />
+          <Ionicons
+            name="calendar"
+            style={styles.icon}
+            color={green}
+          />
         </TouchableOpacity>
         <DateTimePickerModal
           isDarkModeEnabled={false}
@@ -229,7 +229,10 @@ export default function Home({ navigation }) {
           confirmTextIOS="OK"
           display={Platform.OS === "ios" ? "spinner" : "calendar"}
         />
-      </View>
+      </LinearGradient>
+
+
+
       {/* Here is the prayers list, using the RenderItem */}
       <ScrollView>
         <FlatList
@@ -252,17 +255,20 @@ export default function Home({ navigation }) {
           })}
         />
 
-        {/* Here is the bottom Views to show the recent posts */}
+        {/* Here is the bottom Views to show the static post */}
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <TouchableOpacity
             style={styles.TitleRect}
             onPress={() => navigation.navigate("Posts")}
           >
-            <Autolink
-              style={styles.Title}
-              text={Ctxt.StablePost}
-              linkStyle={{ fontWeight: "bold" }}
-            />
+            <LinearGradient colors={['#32AB9F', '#009688', '#32AB9F']} //#009688 #99D5CF --- Beautiful Blue ['#56CCF2', '#2F80ED'
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }} >
+              <Autolink
+                style={styles.Title}
+                text={Ctxt.StablePost}
+                linkStyle={{ fontWeight: "bold" }}
+              /></LinearGradient>
           </TouchableOpacity>
         </View>
 
@@ -283,7 +289,7 @@ export default function Home({ navigation }) {
       <TouchableOpacity
         onPress={() => navigation.navigate("Posts")}
         activeOpacity={0.5}
-        accessibilityHint="settings"
+        accessibilityHint="posts"
         style={{
           borderRadius: 50,
           width: 65,
@@ -306,7 +312,7 @@ export default function Home({ navigation }) {
         }}
       >
         <Ionicons
-          name="md-notifications-outline"
+          name="md-notifications-sharp"
           style={{
             ...(Platform.OS === "ios"
               ? {
@@ -344,7 +350,7 @@ export default function Home({ navigation }) {
         }}
       >
         <MaterialIcons
-          name="settings"
+          name="more-horiz"
           size={40}
           color={green}
           style={{
@@ -364,8 +370,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  imgBackground: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+  },
   TopRect: {
-    backgroundColor: green,
     paddingBottom: 4,
     flexDirection: "row",
     justifyContent: "space-between",
