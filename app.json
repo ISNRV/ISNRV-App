@@ -7,13 +7,14 @@
       "android",
       "web"
     ],
-    "version": "3.1.2",
+    "version": "3.2.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash3.png",
       "resizeMode": "cover"
     },
+    
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -22,7 +23,7 @@
     ],
     "ios": {
       "bundleIdentifier": "org.isnrv.ISNRVhub",
-      "buildNumber": "3.1.2",
+      "buildNumber": "3.2.1",
       "supportsTablet": true,
       "requireFullScreen": true,
       "googleServicesFile": "./important/GoogleService-Info.plist"

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { ISNRVContext } from "./Provider";
 
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import Autolink from "react-native-autolink";
 import Accordion from "react-native-collapsible/Accordion";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -69,8 +69,8 @@ export default function Posts({ navigation }) {
           width: 65,
           height: 65,
           backgroundColor: "white",
-          bottom: 6,
-          left: 6,
+          bottom: 15,
+          left: 15,
           alignSelf: "flex-start",
           position: "absolute",
           alignItems: "center",
@@ -85,7 +85,8 @@ export default function Posts({ navigation }) {
           },
         }}
       >
-        <FontAwesome5 name="arrow-left" size={35} color="rgba(0,150,136,1)" />
+        <MaterialIcons name="home" size={35} color="rgba(0,150,136,1)" />
+        {/* <FontAwesome5 name="arrow-left" size={35} color="rgba(0,150,136,1)" /> */}
       </TouchableOpacity>
     </View>
   );
@@ -101,8 +102,8 @@ const styles = StyleSheet.create({
     color: "rgba(156,152,152,100)",
     fontSize: 30,
     textAlign: "left",
-    marginBottom: 20,
-    paddingTop: 50,
+    marginBottom: 10,
+    marginTop: 60,
     marginHorizontal: 12,
     paddingHorizontal: 9,
   },
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 4,
     flex: 1,
-    lineHeight:30
+    lineHeight: 30
   },
 
   oneRect: {

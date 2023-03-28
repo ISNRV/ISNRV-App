@@ -405,6 +405,15 @@ export function getHDate(GregDate) {
   );
 }
 
+// Will be used to add events to the footer of the prayer times. It doesn't contain the year part
+export function getHDate2(GregDate) {
+  const hDate = hmoment(GregDate);
+  // console.log(hDate.iDate() + "/" + HijriMonths[hDate.iMonth()])
+  return (
+    HijriMonths[hDate.iMonth()]+ "/" + hDate.iDate() 
+  );
+}
+
 const getTimeShift = (selectedDate) => {
   const month = selectedDate.month() + 1;
   if (month != MARCH && month != NOVEMBER) {

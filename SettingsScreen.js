@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   Image,
   Dimensions,
   Linking,
@@ -16,7 +15,9 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { ISNRVContext } from "./Provider";
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
-
+import { ref, listAll, getDownloadURL } from '@firebase/storage';
+import { storage } from "./important/config";
+import * as FileSystem from "expo-file-system";
 
 export default function Settings({ navigation }) {
   //Making use of the "ISNRVContext" from the Provider.js file
@@ -26,43 +27,101 @@ export default function Settings({ navigation }) {
   //   Ctxt.setHijriCorrect(val);
   // };
 
-  const items = [
-    { id: 1, title: 'Ramadan 2023', link: 'https://www.home.isnrv.org/ramadan-2023' },
-    { id: 2, title: 'Weekly Events', link: 'https://www.home.isnrv.org/weekly-events' },
-    { id: 3, title: 'Islamic Sunday School', link: 'https://www.home.isnrv.org/islamic-sunday-school' },
-    { id: 4, title: 'Expansion Project', link: 'https://www.home.isnrv.org/expansion' },
-    { id: 5, title: 'Gallery', link: 'https://www.home.isnrv.org/gallery' },
-    { id: 6, title: 'Muslim Student Association', link: 'https://www.home.isnrv.org/muslim-student-association' },
+  const Ctxt = useContext(ISNRVContext);
+  const CACHED_IMAGES_DIR = FileSystem.cacheDirectory + "cached_images/";
 
-  ];
+  const [imageUrls, setImageUrls] = useState([]);
+  const storageRef = ref(storage, 'Catalog/');
 
 
+  useEffect(() => {
+    const fetchImages = async () => {
+      const { items } = await listAll(storageRef);
+      const promises = items.map(async (itemRef) => {
+        const url = await getDownloadURL(itemRef);
+        const filename = itemRef.name; // 1.jpg, 2.jpg, ....
+        // Check if the image is already cached
+        const fileInfo = await FileSystem.getInfoAsync(
+          CACHED_IMAGES_DIR + filename
+        );
+
+        if (fileInfo.exists) {
+          // If it's cached, use the local file URI
+          return fileInfo.uri;
+        } 
+        else {
+          // If it's not cached, download the file and cache it
+          const fileUri = CACHED_IMAGES_DIR + filename;
+
+          // Create the directory if it doesn't exist
+          const directoryInfo = await FileSystem.getInfoAsync(
+            CACHED_IMAGES_DIR,
+            {
+              isDirectory: true
+            }
+          );
+          if (!directoryInfo.exists) {
+            await FileSystem.makeDirectoryAsync(CACHED_IMAGES_DIR, {
+              intermediates: true
+            });
+          }
+
+          await FileSystem.downloadAsync(url, fileUri);  // If it's not cached, Download the contents at a remote URI to a file in the app's file system.
+          return fileUri; // returning the local file URI.
+        }
+      });
+      const urls = await Promise.all(promises);
+      setImageUrls(urls);
+    };
+
+
+
+    fetchImages();
+  }, []);
+
+
+  catalogList = Ctxt.catalogList
   return (
     <View style={{ flex: 1, }}>
-      {/* <LinearGradient colors={['#009688', '#47C9BC']} //#009688 #99D5CF --- Beautiful Blue ['#56CCF2', '#2F80ED'
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }} style={styles.TopRect}>
-        <Text style={styles.PrayerTimes}>ISNRV App</Text>
-      </LinearGradient> */}
+
       <Text style={styles.TheBigTitle}>ISNRV Catalog</Text>
-
-
       {/* Image taking the first hlf of the page */}
-      <Image source={require('./masjid.jpg')} style={styles.image} />
+
+      <FlatList
+        data={imageUrls}
+        renderItem={({ item }) => {
+          return (
+            <Image source={{ uri: item }} style={styles.carousalImage} />
+          );
+        }}
+        // Any Key to be returned, just word "key" and the index
+        keyExtractor={(item, index) => "key" + index}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={true}
+        horizontal={true}
+        pagingEnabled={true}
+        getItemLayout={(data, index) => ({
+          index,
+          length: Dimensions.get("window").width,
+          offset: Dimensions.get("window").width * index,
+        })}
+
+        style={{ height: Dimensions.get('window').height / 4 }}
+      />
 
       {/* Links to Catalog pages */}
       <FlatList
-        data={items}
-        keyExtractor={(item) => item.id.toString()}
+        data={catalogList}
+        keyExtractor={(item) => item.key}
         numColumns={2}
         contentContainerStyle={styles.flatListContainer}
         renderItem={({ item }) => (
           <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <TouchableOpacity onPress={() => Linking.openURL(item.link)} key={item.id} style={styles.touchable}>
+            <TouchableOpacity onPress={() => Linking.openURL(item.Link)} key={item.key} style={styles.touchable}>
               <LinearGradient colors={['#32AB9F', '#009688', '#32AB9F']} //#009688 #99D5CF --- Beautiful Blue ['#56CCF2', '#2F80ED'
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.catalogRect} >
                 <Text style={styles.catalogTitle} linkStyle={{ fontWeight: "bold" }}>
-                  {item.title}
+                  {item.Title}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -126,8 +185,8 @@ export default function Settings({ navigation }) {
           width: 65,
           height: 65,
           backgroundColor: "white",
-          bottom: 6,
-          left: 6,
+          bottom: 15,
+          left: 15,
           alignSelf: "flex-start",
           position: "absolute",
           alignItems: "center",
@@ -142,7 +201,8 @@ export default function Settings({ navigation }) {
           },
         }}
       >
-        <FontAwesome5 name="arrow-left" size={35} color="rgba(0,150,136,1)" />
+        {/* <FontAwesome5 name="arrow-left" size={35} color="rgba(0,150,136,1)" /> */}
+        <MaterialIcons name="home" size={35} color="rgba(0,150,136,1)" />
       </TouchableOpacity>
     </View>
 
@@ -155,6 +215,18 @@ const ICON_SIZE = 50;
 
 
 const styles = StyleSheet.create({
+  carousalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  carousalImage: {
+    width: Dimensions.get('window').width,
+    // height: Dimensions.get('window').height / 2,
+    resizeMode: 'cover',
+
+  },
+
   flatListContainer: {
     alignItems: 'center',
     padding: 20
@@ -173,7 +245,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     borderRadius: 10,
     margin: 10,
-    flex:1,
+    flex: 1,
     justifyContent: 'center',
   },
   catalogRect: {
@@ -183,7 +255,7 @@ const styles = StyleSheet.create({
     margin: 5,
     justifyContent: 'center' // center vertically
   },
-  
+
   catalogTitle: {
     paddingVertical: 5,
     fontSize: 21,
@@ -225,15 +297,15 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: '30%',
+    flex: 1,
     resizeMode: 'cover',
   },
   TheBigTitle: {
     color: "rgba(156,152,152,100)",
     fontSize: 30,
     textAlign: "left",
-    marginBottom: 20,
-    paddingTop: 50,
+    marginBottom: 10,
+    marginTop: 60,
     marginHorizontal: 12,
     paddingHorizontal: 9,
   },

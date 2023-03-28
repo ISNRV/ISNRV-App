@@ -9,20 +9,22 @@ import {
   FlatList,
   Image,
   Dimensions,
-  ImageBackground
+  Linking,
 } from "react-native";
 import Autolink from "react-native-autolink";
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { FontAwesome, Ionicons, MaterialIcons, SimpleLineIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import {
   AzanTimes365,
   getIqamaWeek,
   getNextPrayer,
   getGDate,
   getHDate,
+  getHDate2,
 } from "./Database/AzanTimes";
+import { HIJRI_EVENTS } from "./Database/hijri_events";
 import notifyApp from "./notifiyApp";
 import moment from "moment";
 const green = "rgba(0,150,136,1)"   // "rgba(0,150,136,1)";
@@ -74,10 +76,8 @@ export default function Home({ navigation }) {
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
+      // `setAppIsReady`, then we may see a blank screen while the app is loading its initial state and rendering its first pixels. 
+      // So instead, we hide the splash screen once we know the root view has already performed layout.
       await SplashScreen.hideAsync();
     }
   }, [appIsReady]);
@@ -123,6 +123,27 @@ export default function Home({ navigation }) {
       </View>
     );
   }
+
+  const HijriEventText = ({ hdate2 }) => {
+    const idx = HIJRI_EVENTS.findIndex(event => event[1] == hdate2);
+    if (idx!=-1) {
+      return (
+        <Text style={{
+          fontSize: 24,
+          textAlign: 'center',
+          color: '#444',
+          paddingTop:15, 
+          fontWeight:500 
+        }}>
+          {HIJRI_EVENTS[idx][0]}
+        </Text>
+      );
+    }
+  
+    return null;
+  };
+
+
   /********************************************************************************/
   const RenderItem = ({ item, index }) => {
     // item is the azan times, and item[6] especially contains the "date" of this row/prayer times
@@ -130,6 +151,7 @@ export default function Home({ navigation }) {
     const gdate = getGDate(currDate);
     //Here we try to correct the hijri date by accessing it from the asyncStorage
     const hdate = getHDate(currDate);
+    const hday = getHDate2(currDate);
     // const hdate = getHDate(currDate.add(Ctxt.HijriCorrect, "days"));
     //gets the iqama times based on the currDate
     const IqamaTimesOneDay = getIqamaWeek(currDate);
@@ -192,6 +214,8 @@ export default function Home({ navigation }) {
           />
         </View>
 
+
+        <HijriEventText hdate2={hday} />
 
       </View>
     );
@@ -259,7 +283,8 @@ export default function Home({ navigation }) {
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <TouchableOpacity
             style={styles.TitleRect}
-            onPress={() => navigation.navigate("Posts")}
+            // onPress={() => navigation.navigate("Posts")}
+            onPress={() =>  Linking.openURL("https://www.paypal.com/donate?hosted_button_id=TQA3P59H6HMKQ")}
           >
             <LinearGradient colors={['#32AB9F', '#009688', '#32AB9F']} //#009688 #99D5CF --- Beautiful Blue ['#56CCF2', '#2F80ED'
               start={{ x: 0, y: 0 }}
@@ -295,8 +320,8 @@ export default function Home({ navigation }) {
           width: 65,
           height: 65,
           backgroundColor: "white",
-          bottom: 6,
-          right: 6,
+          bottom: 15,
+          right: 15,
           alignSelf: "flex-end",
           marginTop: 2,
           alignItems: "center",
@@ -333,8 +358,8 @@ export default function Home({ navigation }) {
           width: 65,
           height: 65,
           backgroundColor: "white",
-          bottom: 6,
-          left: 6,
+          bottom: 15,
+          left: 15,
           alignSelf: "flex-start",
           position: "absolute",
           alignItems: "center",
@@ -420,7 +445,7 @@ const styles = StyleSheet.create({
     elevation: 6,
     shadowColor: "grey",
     marginBottom: 30,
-    marginTop: 30,
+    marginTop: 15,
     width: Dimensions.get("window").width * 0.9,
     shadowColor: '#000',
     shadowOffset: {

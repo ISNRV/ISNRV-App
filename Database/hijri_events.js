@@ -1,0 +1,15 @@
+export const HIJRI_EVENTS = [
+  ['Eid al-Fitr', 'Shawwal/1'],
+  ['Tarwiyah Day  ', 'Dhu al-Hijjah/8'],
+  ['Day of Arafat', 'Dhu al-Hijjah/9'],
+  ['Eid al-Adha', 'Dhu al-Hijjah/10'],
+  ['Days of Tashreeq - 1', 'Dhu al-Hijjah/11'],
+  ['Days of Tashreeq - 2', 'Dhu al-Hijjah/12'],
+  ['Days of Tashreeq - 3', 'Dhu al-Hijjah/13'],
+  ['First Day of Ramadan', 'Ramadan/1'],
+  ['Start of the Last Ten Nights', 'Ramadan/19'],
+  ['Islamic New Year', 'Muharram/1'],
+  ['Day of Ashura', 'Muharram/10'],
+  ["Israa and Mi'raj", 'Rajab/27'],
+  ["Prophet Mohammed's Birthday", 'Rabii I/12'],
+];
