@@ -7,7 +7,7 @@
       "android",
       "web"
     ],
-    "version": "3.2.1",
+    "version": "3.2.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,7 +23,7 @@
     ],
     "ios": {
       "bundleIdentifier": "org.isnrv.ISNRVhub",
-      "buildNumber": "3.2.1",
+      "buildNumber": "3.2.2",
       "supportsTablet": true,
       "requireFullScreen": true,
       "googleServicesFile": "./important/GoogleService-Info.plist"
@@ -31,7 +31,7 @@
     "android": {
       "package": "com.isnrv",
       "googleServicesFile": "./important/google-services.json",
-      "versionCode": 16,
+      "versionCode": 17,
       "permissions": []
     },
 

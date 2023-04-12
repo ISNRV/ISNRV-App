@@ -7,7 +7,7 @@ export const HIJRI_EVENTS = [
   ['Days of Tashreeq - 2', 'Dhu al-Hijjah/12'],
   ['Days of Tashreeq - 3', 'Dhu al-Hijjah/13'],
   ['First Day of Ramadan', 'Ramadan/1'],
-  ['Start of the Last Ten Nights', 'Ramadan/19'],
+  ['Start of the Last Ten Nights', 'Ramadan/20'],
   ['Islamic New Year', 'Muharram/1'],
   ['Day of Ashura', 'Muharram/10'],
   ["Israa and Mi'raj", 'Rajab/27'],
